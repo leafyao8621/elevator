@@ -11,12 +11,15 @@ $(BIN): $(OBJ)
 	$(CC) $(OBJ) -o $(BIN)
 
 .PHONY: clean valgrind gdb run
-run: $(BIN)
-	./$(BIN)
-gdb: $(BIN)
-	gdb ./$(BIN)
-valgrind: $(BIN)
-	valgrind --leak-check=full -s ./$(BIN)
 clean:
 	@rm $(OBJ)
 	@rm $(BIN)
+
+valgrind: $(BIN)
+	@valgrind --leak-check=full -s ./$(BIN)
+
+gdb: $(BIN)
+	@gdb ./$(BIN)
+
+run: $(BIN)
+	@./$(BIN)

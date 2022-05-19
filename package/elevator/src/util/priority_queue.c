@@ -58,21 +58,31 @@ int priority_queue_log(
     return 0;
 }
 
-// static inline int comp(
-//     struct PriorityQueueNode *a,
-//     struct PriorityQueueNode *b
-// ) {
-//     if (a->timestamp == b->timestamp) {
-//         return a->id - b->id;
-//     }
-//     if (a->timestamp > b->timestamp) {
-//         return 1;
-//     }
-//     if (a->timestamp < b->timestamp) {
-//         return -1;
-//     }
-//     return 0;
-// }
+static inline int comp(
+    struct PriorityQueueNode *a,
+    struct PriorityQueueNode *b
+) {
+    if (a->timestamp == b->timestamp) {
+        return a->id - b->id;
+    }
+    if (a->timestamp > b->timestamp) {
+        return 1;
+    }
+    if (a->timestamp < b->timestamp) {
+        return -1;
+    }
+    return 0;
+}
+
+static inline void swap(
+    struct PriorityQueueNode *a,
+    struct PriorityQueueNode *b
+) {
+    static struct PriorityQueueNode temp;
+    temp = *a;
+    *a = *b;
+    *b = temp;
+}
 
 int priority_queue_add(
     struct PriorityQueue *pq,
@@ -92,10 +102,15 @@ int priority_queue_add(
         }
         pq->data_end = pq->data + pq->size;
     }
-    ++pq->size;
     pq->data_end->id = id;
     pq->data_end->timestamp = timestamp;
     pq->data_end->data = data;
     ++pq->data_end;
+    for (uint64_t idx = pq->size++; idx; idx >>= 1) {
+        if (comp(&pq->data[idx], &pq->data[idx >> 1]) > 0) {
+            break;
+        }
+        swap(&pq->data[idx], &pq->data[idx >> 1]);
+    }
     return 0;
 }
