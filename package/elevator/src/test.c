@@ -17,9 +17,9 @@ int main(void) {
         9,
         9,
         5,
-        7,
-        8,
-        3,
+        5,
+        5,
+        2,
         2,
         0.3,
         20
@@ -30,7 +30,25 @@ int main(void) {
         uint64_t *temp = malloc(sizeof(uint64_t));
         *temp = i << 1;
         priority_queue_add(&pq, *iter_id, *iter_timestamp, temp);
+    }
+    priority_queue_log(&pq, print_func, stdout);
+    for (uint64_t i = 0; i < 10; ++i, ++iter_id, ++iter_timestamp) {
+        priority_queue_remove(&pq);
         priority_queue_log(&pq, print_func, stdout);
+        putchar(10);
+    }
+    iter_id = id;
+    iter_timestamp = timestamp;
+    for (uint64_t i = 0; i < 10; ++i, ++iter_id, ++iter_timestamp) {
+        uint64_t *temp = malloc(sizeof(uint64_t));
+        *temp = i << 1;
+        priority_queue_add(&pq, *iter_id, *iter_timestamp, temp);
+    }
+    priority_queue_log(&pq, print_func, stdout);
+    for (uint64_t i = 0; i < 10; ++i, ++iter_id, ++iter_timestamp) {
+        priority_queue_remove(&pq);
+        priority_queue_log(&pq, print_func, stdout);
+        putchar(10);
     }
     priority_queue_finalize(&pq);
     return 0;
