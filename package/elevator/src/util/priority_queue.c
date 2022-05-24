@@ -119,6 +119,9 @@ int priority_queue_remove(struct PriorityQueue *pq) {
     if (!pq) {
         return ERR_NULL_PTR;
     }
+    if (!pq->size) {
+        return ERR_PRIORITY_QUEUE_EMPTY;
+    }
     --pq->size;
     --pq->data_end;
     free(pq->data->data);
