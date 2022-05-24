@@ -13,4 +13,10 @@ struct Model {
     struct Elevator *elevators;
 };
 
+int model_initialize(
+    struct Model *model,
+    uint64_t num_elevators,
+    uint64_t weight_limit
+);
+
 #endif

@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "util/priority_queue.h"
+#include "util/linked_list.h"
 
 void print_func(void *data, FILE *fout) {
     fprintf(fout, "%lu\n", *(uint64_t*)data);
@@ -51,5 +52,27 @@ int main(void) {
         putchar(10);
     }
     priority_queue_finalize(&pq);
+    struct LinkedList ll;
+    linked_list_initialize(&ll);
+    for (uint64_t i = 0; i < 10; ++i) {
+        uint64_t *temp = malloc(sizeof(uint64_t));
+        *temp = i << 1;
+        linked_list_push_back(&ll, temp);
+        linked_list_log(&ll, print_func, stdout);
+        putchar(10);
+    }
+    for (uint64_t i = 0; i < 10; ++i) {
+        linked_list_pop_front(&ll);
+        linked_list_log(&ll, print_func, stdout);
+        putchar(10);
+    }
+    for (uint64_t i = 0; i < 10; ++i) {
+        uint64_t *temp = malloc(sizeof(uint64_t));
+        *temp = i << 1;
+        linked_list_push_back(&ll, temp);
+        linked_list_log(&ll, print_func, stdout);
+        putchar(10);
+    }
+    linked_list_finalize(&ll);
     return 0;
 }

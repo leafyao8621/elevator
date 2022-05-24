@@ -10,4 +10,6 @@ struct Event {
     int (*handler)(struct Event *event, struct Engine *engine);
 };
 
+int event_handle(struct Event *event, struct Engine *engine);
+
 #endif
