@@ -19,12 +19,17 @@ struct Engine {
 
 int engine_initialize(
     struct Engine *engine,
+    uint64_t num_elevators,
+    uint64_t num_floors,
+    uint64_t weight_limit,
     double *rate_up,
     double *rate_down,
     double time_end,
-    uint64_t num_iter
+    uint64_t num_iter,
+    uint32_t seed
 );
-
 int engine_finalize(struct Engine *engine);
+int engine_log(struct Engine *engine, FILE *fout);
+int engine_run(struct Engine *engine);
 
 #endif

@@ -5,5 +5,6 @@
 #define ERR_OUT_OF_MEMORY 2
 #define ERR_PRIORITY_QUEUE_EMPTY 3
 #define ERR_LINKED_LIST_EMPTY 4
+#define ERR_INVALID_SEED 5
 
 #endif
