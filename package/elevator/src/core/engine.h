@@ -8,12 +8,23 @@
 
 struct Engine {
     uint64_t num_iter, id;
-    double time_now;
+    double time_now, time_end;
     struct MT19937 gen;
-    double *rates;
+    double *rate_up;
+    double *rate_down;
     struct Model model;
     struct Statistics statistics;
     struct PriorityQueue priority_queue;
 };
+
+int engine_initialize(
+    struct Engine *engine,
+    double *rate_up,
+    double *rate_down,
+    double time_end,
+    uint64_t num_iter
+);
+
+int engine_finalize(struct Engine *engine);
 
 #endif
