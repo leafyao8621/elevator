@@ -22,13 +22,14 @@ int model_initialize(
     for (uint64_t i = 0; i < num_elevators; ++i, ++iter_elevator) {
         linked_list_initialize(&iter_elevator->payload);
     }
-    model->queues = malloc(sizeof(struct LinkedList) * num_floors);
+    model->queues = malloc(sizeof(struct Queue) * num_floors);
     if (!model->queues) {
         return ERR_OUT_OF_MEMORY;
     }
-    struct LinkedList *iter_queue = model->queues;
+    struct Queue *iter_queue = model->queues;
     for (uint64_t i = 0; i < num_floors; ++i, ++iter_queue) {
-        linked_list_initialize(iter_queue);
+        linked_list_initialize(&iter_queue->up);
+        linked_list_initialize(&iter_queue->down);
     }
     return 0;
 }
@@ -42,9 +43,10 @@ int model_finalize(struct Model *model) {
         linked_list_finalize(&iter_elevator->payload);
     }
     free(model->elevators);
-    struct LinkedList *iter_queue = model->queues;
+    struct Queue *iter_queue = model->queues;
     for (uint64_t i = 0; i < model->num_floors; ++i, ++iter_queue) {
-        linked_list_finalize(iter_queue);
+        linked_list_finalize(&iter_queue->up);
+        linked_list_finalize(&iter_queue->down);
     }
     free(model->queues);
     return 0;
@@ -69,10 +71,13 @@ int model_log(struct Model *model, FILE *fout) {
         fprintf(fout, "elevator %lu\n", i);
         linked_list_log(&iter_elevator->payload, agent_logger, fout);
     }
-    struct LinkedList *iter_queue = model->queues;
+    struct Queue *iter_queue = model->queues;
     for (uint64_t i = 0; i < model->num_floors; ++i, ++iter_queue) {
         fprintf(fout, "floor %lu\n", i);
-        linked_list_log(iter_queue, agent_logger, fout);
+        fputs("up:\n", fout);
+        linked_list_log(&iter_queue->up, agent_logger, fout);
+        fputs("down:\n", fout);
+        linked_list_log(&iter_queue->down, agent_logger, fout);
     }
     return 0;
 }

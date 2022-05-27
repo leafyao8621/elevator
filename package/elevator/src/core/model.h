@@ -14,10 +14,15 @@ struct Elevator {
     struct LinkedList payload;
 };
 
+struct Queue {
+    struct LinkedList up;
+    struct LinkedList down;
+};
+
 struct Model {
     uint64_t num_elevators, num_floors, weight_limit;
     struct Elevator *elevators;
-    struct LinkedList *queues;
+    struct Queue *queues;
 };
 
 int model_initialize(
