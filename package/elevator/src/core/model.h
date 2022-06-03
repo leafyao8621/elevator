@@ -4,6 +4,9 @@
 #include <stdint.h>
 #include "../util/linked_list.h"
 
+#define DIRECTION_UP 0
+#define DIRECTION_DOWN 1
+
 struct Agent {
     uint64_t destination;
     double time_entered;
@@ -33,5 +36,12 @@ int model_initialize(
 );
 int model_finalize(struct Model *model);
 int model_log(struct Model *model, FILE *fout);
+int model_arrival(
+    struct Model *model,
+    uint8_t direction,
+    uint64_t floor,
+    uint64_t destination,
+    double time_entered
+);
 
 #endif

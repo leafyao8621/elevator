@@ -59,3 +59,13 @@ int engine_finalize(struct Engine *engine) {
     model_finalize(&engine->model);
     return 0;
 }
+
+int engine_run(struct Engine *engine, bool verbose, FILE *fout) {
+    if (!engine || !fout) {
+        return ERR_NULL_PTR;
+    }
+    if (verbose && fout == stdout) {
+        return ERR_CONFLICTING_LOGGING;
+    }
+    return 0;
+}

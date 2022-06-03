@@ -1,6 +1,8 @@
 #ifndef _ENGINE_H_
 #define _ENGINE_H_
 
+#include <stdbool.h>
+
 #include "model.h"
 #include "statistics.h"
 #include "../util/priority_queue.h"
@@ -29,7 +31,6 @@ int engine_initialize(
     uint32_t seed
 );
 int engine_finalize(struct Engine *engine);
-int engine_log(struct Engine *engine, FILE *fout);
-int engine_run(struct Engine *engine);
+int engine_run(struct Engine *engine, bool verbose, FILE *fout);
 
 #endif
