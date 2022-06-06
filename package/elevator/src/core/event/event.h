@@ -7,8 +7,8 @@
 struct Event {
     union {
         struct {
-            uint8_t direction;
             uint64_t floor;
+            uint64_t destination;
         } arrival;
     } data;
     int (*handler)(struct Event*, struct Engine*);
@@ -20,8 +20,8 @@ int event_log(struct Event *event, FILE * fout);
 
 int event_arrival_initialize(
     struct Event *event,
-    uint8_t direction,
-    uint64_t floor
+    uint64_t floor,
+    uint64_t destination
 );
 
 #endif

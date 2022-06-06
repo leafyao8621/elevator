@@ -38,7 +38,6 @@ int model_finalize(struct Model *model);
 int model_log(struct Model *model, FILE *fout);
 int model_arrival(
     struct Model *model,
-    uint8_t direction,
     uint64_t floor,
     uint64_t destination,
     double time_entered

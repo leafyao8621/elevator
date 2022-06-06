@@ -84,7 +84,6 @@ int model_log(struct Model *model, FILE *fout) {
 
 int model_arrival(
     struct Model *model,
-    uint8_t direction,
     uint64_t floor,
     uint64_t destination,
     double time_entered
@@ -92,7 +91,7 @@ int model_arrival(
     if (!model) {
         return ERR_NULL_PTR;
     }
-    if (direction > 1 && floor > model->num_floors) {
+    if (floor > model->num_floors) {
         return ERR_IDX_OUT_OF_BOUND;
     }
     struct Agent *temp = malloc(sizeof(struct Agent));
@@ -100,7 +99,9 @@ int model_arrival(
     temp->time_entered = time_entered;
     int ret =
         linked_list_push_back(
-            direction ? &model->queues[floor].down : &model->queues[floor].up,
+            destination < floor ?
+            &model->queues[floor].down :
+            &model->queues[floor].up,
             temp
         );
     if (ret) {

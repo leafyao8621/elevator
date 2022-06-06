@@ -8,5 +8,6 @@
 #define ERR_INVALID_SEED 5
 #define ERR_CONFLICTING_LOGGING 6
 #define ERR_IDX_OUT_OF_BOUND 7
+#define ERR_SRC_SAME_AS_DEST 8
 
 #endif
