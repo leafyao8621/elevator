@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
+
 #include "engine.h"
 #include "../util/err_code.h"
 
@@ -66,6 +68,45 @@ int engine_run(struct Engine *engine, bool verbose, FILE *fout) {
     }
     if (verbose && fout == stdout) {
         return ERR_CONFLICTING_LOGGING;
+    }
+    double *iter_rate_up = engine->rate_up;
+    double *iter_rate_down = engine->rate_down;
+    for (
+        uint64_t i = 0;
+        i < engine->model.num_floors;
+        ++i, ++iter_rate_up, ++iter_rate_down
+    ) {
+        uint64_t up_dest =
+            mt19937_gen(&engine->gen) % (engine->model.num_floors - i) + i;
+        uint64_t down_dest = mt19937_gen(&engine->gen) % i;
+        struct Event *up = malloc(sizeof(struct Event));
+        if (!up) {
+            return ERR_OUT_OF_MEMORY;
+        }
+        up->data.arrival.floor = i;
+        up->data.arrival.destination = up_dest;
+        struct Event *down = malloc(sizeof(struct Event));
+        if (!down) {
+            return ERR_OUT_OF_MEMORY;
+        }
+        down->data.arrival.floor = i;
+        down->data.arrival.destination = down_dest;
+        priority_queue_add(
+            &engine->priority_queue,
+            engine->id++,
+            engine->time_now -
+            log(((double)mt19937_gen(&engine->gen)) / 0xffffffff) /
+            *iter_rate_up,
+            up
+        );
+        priority_queue_add(
+            &engine->priority_queue,
+            engine->id++,
+            engine->time_now -
+            log(((double)mt19937_gen(&engine->gen)) / 0xffffffff) /
+            *iter_rate_down,
+            down
+        );
     }
     return 0;
 }

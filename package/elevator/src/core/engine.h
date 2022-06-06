@@ -5,6 +5,7 @@
 
 #include "model.h"
 #include "statistics.h"
+#include "event/event.h"
 #include "../util/priority_queue.h"
 #include "../util/mt19937.h"
 

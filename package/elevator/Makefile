@@ -8,7 +8,7 @@ BIN = test
 	$(CC) $(CFLAGS) -g -c $< -o $@
 
 $(BIN): $(OBJ)
-	$(CC) $(OBJ) -o $(BIN)
+	$(CC) $(OBJ) -o $(BIN) -lm
 
 .PHONY: clean valgrind gdb run
 clean:
