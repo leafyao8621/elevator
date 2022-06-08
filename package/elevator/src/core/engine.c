@@ -42,6 +42,7 @@ int engine_initialize(
         return ERR_OUT_OF_MEMORY;
     }
     memcpy(engine->rate_down, rate_down, sizeof(double) * num_floors);
+    engine->id = 0;
     engine->time_now = 0;
     engine->time_end = time_end;
     engine->num_iter = num_iter;
