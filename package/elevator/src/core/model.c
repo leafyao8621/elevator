@@ -1,4 +1,5 @@
 #include <stdlib.h>
+
 #include "model.h"
 #include "../util/err_code.h"
 
