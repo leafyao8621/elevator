@@ -10,4 +10,6 @@
 #define ERR_IDX_OUT_OF_BOUND 7
 #define ERR_SRC_SAME_AS_DEST 8
 
+extern const char *err_str[8];
+
 #endif

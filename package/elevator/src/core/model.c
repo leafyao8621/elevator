@@ -56,7 +56,7 @@ int model_finalize(struct Model *model) {
 static void agent_logger(void *data, FILE *fout) {
     fprintf(
         fout,
-        "destination: %lu\ntime_entered: %lf\n",
+        "destination: %lu\ntime entered: %lf\n",
         ((struct Agent*)data)->destination,
         ((struct Agent*)data)->time_entered
     );
@@ -69,12 +69,12 @@ int model_log(struct Model *model, FILE *fout) {
     fprintf(fout, "weight limit: %lu\n", model->weight_limit);
     struct Elevator *iter_elevator = model->elevators;
     for (uint64_t i = 0; i < model->num_elevators; ++i, ++iter_elevator) {
-        fprintf(fout, "elevator %lu\n", i);
+        fprintf(fout, "elevator %lu:\n", i);
         linked_list_log(&iter_elevator->payload, agent_logger, fout);
     }
     struct Queue *iter_queue = model->queues;
     for (uint64_t i = 0; i < model->num_floors; ++i, ++iter_queue) {
-        fprintf(fout, "floor %lu\n", i);
+        fprintf(fout, "floor %lu:\n", i);
         fputs("up:\n", fout);
         linked_list_log(&iter_queue->up, agent_logger, fout);
         fputs("down:\n", fout);

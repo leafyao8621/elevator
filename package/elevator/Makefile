@@ -10,7 +10,7 @@ BIN = test
 $(BIN): $(OBJ)
 	$(CC) $(OBJ) -o $(BIN) -lm
 
-.PHONY: clean valgrind gdb run
+.PHONY: clean valgrind gdb run dump
 clean:
 	@rm $(OBJ)
 	@rm $(BIN)
@@ -23,3 +23,6 @@ gdb: $(BIN)
 
 run: $(BIN)
 	@./$(BIN)
+
+dump: $(BIN)
+	@./$(BIN) | tee dump

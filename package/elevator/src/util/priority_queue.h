@@ -4,6 +4,12 @@
 #include <stdio.h>
 #include <stdint.h>
 
+struct PriorityQueueNode {
+    uint64_t id;
+    double timestamp;
+    void *data;
+};
+
 struct PriorityQueue {
     uint64_t size, capacity;    
     struct PriorityQueueNode *data, *data_end;

@@ -82,6 +82,7 @@ int engine_run(struct Engine *engine, bool verbose, FILE *fout) {
     if (verbose && fout == stdout) {
         return ERR_CONFLICTING_LOGGING;
     }
+    int ret = 0;
     double *iter_rate_up = engine->rate_up;
     double *iter_rate_down = engine->rate_down;
     for (
@@ -93,12 +94,16 @@ int engine_run(struct Engine *engine, bool verbose, FILE *fout) {
         struct Event *down = 0;
         if (i != engine->model.num_floors - 1) {
             uint64_t up_dest =
-            mt19937_gen(&engine->gen) % (engine->model.num_floors - i) + i;
+                mt19937_gen(&engine->gen) %
+                (engine->model.num_floors - i - 1) + i + 1;
             up = malloc(sizeof(struct Event));
             if (!up) {
                 return ERR_OUT_OF_MEMORY;
             }
-            event_arrival_initialize(up, i, up_dest);
+            ret = event_arrival_initialize(up, i, up_dest);
+            if (ret) {
+                return ret;
+            }
         }
         if (i) {
             uint64_t down_dest = mt19937_gen(&engine->gen) % i;
@@ -106,27 +111,38 @@ int engine_run(struct Engine *engine, bool verbose, FILE *fout) {
             if (!down) {
                 return ERR_OUT_OF_MEMORY;
             }
-            event_arrival_initialize(down, i, down_dest);
+            ret = event_arrival_initialize(down, i, down_dest);
+            if (ret) {
+                return ret;
+            }
         }
         if (up) {
-            priority_queue_add(
-                &engine->priority_queue,
-                engine->id++,
-                engine->time_now -
-                log(((double)mt19937_gen(&engine->gen)) / 0xffffffff) /
-                *iter_rate_up,
-                up
-            );
+            ret =
+                priority_queue_add(
+                    &engine->priority_queue,
+                    engine->id++,
+                    engine->time_now -
+                    log(((double)mt19937_gen(&engine->gen)) / 0xffffffff) /
+                    *iter_rate_up,
+                    up
+                );
+            if (ret) {
+                return ret;
+            }
         }
         if (down) {
-            priority_queue_add(
-                &engine->priority_queue,
-                engine->id++,
-                engine->time_now -
-                log(((double)mt19937_gen(&engine->gen)) / 0xffffffff) /
-                *iter_rate_down,
-                down
-            );
+            ret = 
+                priority_queue_add(
+                    &engine->priority_queue,
+                    engine->id++,
+                    engine->time_now -
+                    log(((double)mt19937_gen(&engine->gen)) / 0xffffffff) /
+                    *iter_rate_down,
+                    down
+                );
+            if (ret) {
+                return ret;
+            }
         }
     }
     if (verbose) {
@@ -134,6 +150,18 @@ int engine_run(struct Engine *engine, bool verbose, FILE *fout) {
     }
     if (fout) {
         engine_log(engine, fout);
+    }
+    for (; engine->time_now <= engine->time_end;) {
+        if (verbose) {
+            engine_log(engine, stdout);
+        }
+        if (fout) {
+            engine_log(engine, fout);
+        }
+        ret = event_handle(engine->priority_queue.data->data, engine);
+        if (ret) {
+            return ret;
+        }
     }
     return 0;
 }

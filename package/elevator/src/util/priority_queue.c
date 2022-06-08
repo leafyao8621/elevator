@@ -3,12 +3,6 @@
 #include "priority_queue.h"
 #include "err_code.h"
 
-struct PriorityQueueNode {
-    uint64_t id;
-    double timestamp;
-    void *data;
-};
-
 int priority_queue_initialize(struct PriorityQueue *pq, uint64_t capacity) {
     if (!pq) {
         return ERR_NULL_PTR;
