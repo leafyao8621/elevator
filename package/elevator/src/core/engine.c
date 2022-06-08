@@ -3,6 +3,7 @@
 #include <math.h>
 
 #include "engine.h"
+#include "event/event.h"
 #include "../util/err_code.h"
 
 int engine_initialize(
@@ -62,8 +63,19 @@ int engine_finalize(struct Engine *engine) {
     return 0;
 }
 
+static void event_logger(void *event, FILE *fout) {
+    event_log((struct Event*)event, fout);
+}
+
+static void engine_log(struct Engine *engine, FILE *fout) {
+    fprintf(fout, "time now: %lf\n", engine->time_now);
+    fputs("event queue:\n", fout);
+    priority_queue_log(&engine->priority_queue, event_logger, fout);
+    model_log(&engine->model, fout);
+}
+
 int engine_run(struct Engine *engine, bool verbose, FILE *fout) {
-    if (!engine || !fout) {
+    if (!engine) {
         return ERR_NULL_PTR;
     }
     if (verbose && fout == stdout) {
@@ -76,37 +88,51 @@ int engine_run(struct Engine *engine, bool verbose, FILE *fout) {
         i < engine->model.num_floors;
         ++i, ++iter_rate_up, ++iter_rate_down
     ) {
-        uint64_t up_dest =
+        struct Event *up = 0;
+        struct Event *down = 0;
+        if (i != engine->model.num_floors - 1) {
+            uint64_t up_dest =
             mt19937_gen(&engine->gen) % (engine->model.num_floors - i) + i;
-        uint64_t down_dest = mt19937_gen(&engine->gen) % i;
-        struct Event *up = malloc(sizeof(struct Event));
-        if (!up) {
-            return ERR_OUT_OF_MEMORY;
+            up = malloc(sizeof(struct Event));
+            if (!up) {
+                return ERR_OUT_OF_MEMORY;
+            }
+            event_arrival_initialize(up, i, up_dest);
         }
-        up->data.arrival.floor = i;
-        up->data.arrival.destination = up_dest;
-        struct Event *down = malloc(sizeof(struct Event));
-        if (!down) {
-            return ERR_OUT_OF_MEMORY;
+        if (i) {
+            uint64_t down_dest = mt19937_gen(&engine->gen) % i;
+            down = malloc(sizeof(struct Event));
+            if (!down) {
+                return ERR_OUT_OF_MEMORY;
+            }
+            event_arrival_initialize(down, i, down_dest);
         }
-        down->data.arrival.floor = i;
-        down->data.arrival.destination = down_dest;
-        priority_queue_add(
-            &engine->priority_queue,
-            engine->id++,
-            engine->time_now -
-            log(((double)mt19937_gen(&engine->gen)) / 0xffffffff) /
-            *iter_rate_up,
-            up
-        );
-        priority_queue_add(
-            &engine->priority_queue,
-            engine->id++,
-            engine->time_now -
-            log(((double)mt19937_gen(&engine->gen)) / 0xffffffff) /
-            *iter_rate_down,
-            down
-        );
+        if (up) {
+            priority_queue_add(
+                &engine->priority_queue,
+                engine->id++,
+                engine->time_now -
+                log(((double)mt19937_gen(&engine->gen)) / 0xffffffff) /
+                *iter_rate_up,
+                up
+            );
+        }
+        if (down) {
+            priority_queue_add(
+                &engine->priority_queue,
+                engine->id++,
+                engine->time_now -
+                log(((double)mt19937_gen(&engine->gen)) / 0xffffffff) /
+                *iter_rate_down,
+                down
+            );
+        }
+    }
+    if (verbose) {
+        engine_log(engine, stdout);
+    }
+    if (fout) {
+        engine_log(engine, fout);
     }
     return 0;
 }

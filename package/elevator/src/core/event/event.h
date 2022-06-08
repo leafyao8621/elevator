@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include "../engine.h"
+
 struct Event {
     union {
         struct {
@@ -12,11 +14,11 @@ struct Event {
         } arrival;
     } data;
     int (*handler)(struct Event*, struct Engine*);
-    int (*logger) (struct Event*, FILE*);
+    int (*logger)(struct Event*, FILE*);
 };
 
 int event_handle(struct Event *event, struct Engine *engine);
-int event_log(struct Event *event, FILE * fout);
+int event_log(struct Event *event, FILE *fout);
 
 int event_arrival_initialize(
     struct Event *event,

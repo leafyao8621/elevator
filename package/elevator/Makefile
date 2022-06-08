@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -pedantic
-SRC = src/test.c $(wildcard src/*/*.c) $(wildcard src/*/*/*.c)
+SRC = src/test.c $(wildcard src/*/*.c) $(wildcard src/*/*/*.c) $(wildcard src/*/*/*/*.c)
 OBJ = $(SRC:.c=.o)
 BIN = test
 

@@ -1,4 +1,3 @@
-#include "../../engine.h"
 #include "../event.h"
 #include "../../../util/err_code.h"
 
@@ -40,5 +39,6 @@ int event_arrival_initialize(
     event->data.arrival.floor = floor;
     event->data.arrival.destination = destination;
     event->handler = handler;
+    event->logger = logger;
     return 0;
 }
