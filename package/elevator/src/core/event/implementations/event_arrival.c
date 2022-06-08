@@ -15,7 +15,7 @@ static int handler(struct Event *event, struct Engine *engine) {
     return ret;
 }
 
-static int logger (struct Event *event, FILE *fout) {
+static int logger(struct Event *event, FILE *fout) {
     if (!event || !fout) {
         return ERR_NULL_PTR;
     }
