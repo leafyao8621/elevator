@@ -7,7 +7,8 @@ int model_initialize(
     struct Model *model,
     uint64_t num_elevators,
     uint64_t num_floors,
-    uint64_t weight_limit
+    uint64_t weight_limit,
+    double time_per_floor
 ) {
     if (!model) {
         return ERR_NULL_PTR;
@@ -15,6 +16,7 @@ int model_initialize(
     model->num_elevators = num_elevators;
     model->num_floors = num_floors;
     model->weight_limit = weight_limit;
+    model->time_per_floor = time_per_floor;
     model->elevators = malloc(sizeof(struct Elevator) * num_elevators);
     if (!model->elevators) {
         return ERR_OUT_OF_MEMORY;
@@ -70,6 +72,7 @@ int model_log(struct Model *model, FILE *fout) {
     struct Elevator *iter_elevator = model->elevators;
     for (uint64_t i = 0; i < model->num_elevators; ++i, ++iter_elevator) {
         fprintf(fout, "elevator %lu:\n", i);
+        fprintf(fout, "floor: %lu\n", iter_elevator->floor);
         linked_list_log(&iter_elevator->payload, agent_logger, fout);
     }
     struct Queue *iter_queue = model->queues;

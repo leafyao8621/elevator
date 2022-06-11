@@ -24,6 +24,7 @@ int engine_initialize(
     uint64_t num_elevators,
     uint64_t num_floors,
     uint64_t weight_limit,
+    double time_per_floor,
     double *rate_up,
     double *rate_down,
     double time_end,

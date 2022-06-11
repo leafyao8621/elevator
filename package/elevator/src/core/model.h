@@ -24,6 +24,7 @@ struct Queue {
 
 struct Model {
     uint64_t num_elevators, num_floors, weight_limit;
+    double time_per_floor;
     struct Elevator *elevators;
     struct Queue *queues;
 };
@@ -32,7 +33,8 @@ int model_initialize(
     struct Model *model,
     uint64_t num_elevators,
     uint64_t num_floors,
-    uint64_t weight_limit
+    uint64_t weight_limit,
+    double time_per_floor
 );
 int model_finalize(struct Model *model);
 int model_log(struct Model *model, FILE *fout);

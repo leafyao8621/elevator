@@ -11,6 +11,7 @@ int engine_initialize(
     uint64_t num_elevators,
     uint64_t num_floors,
     uint64_t weight_limit,
+    double time_per_floor,
     double *rate_up,
     double *rate_down,
     double time_end,
@@ -22,7 +23,8 @@ int engine_initialize(
             &engine->model,
             num_elevators,
             num_floors,
-            weight_limit
+            weight_limit,
+            time_per_floor
         );
     if (ret) {
         return ret;
